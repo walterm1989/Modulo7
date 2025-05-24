@@ -1,10 +1,10 @@
 from ultralytics import YOLO
 import cv2
 
-# Cargar el modelo YOLOv8 preentrenado
+# Carga el modelo YOLOv8 pre‑entrenado
 model = YOLO('yolov8n.pt')
 
-# Abre la WebCam
+# Abre la webcam
 cap = cv2.VideoCapture(0)
 
 while True:
@@ -12,14 +12,15 @@ while True:
     if not ret:
         break
 
-    # Realiza inferencia en la imagen
-    results = model(frame)
+    # ---- Aquí cambiamos: sólo clase 0 (persona) ----
+    results = model(frame, classes=[0], conf=0.5)  
+    # -----------------------------------------------
 
-    # Visualiza los resultados en la imagen
+    # Visualiza los resultados (sólo personas)
     annotated_frame = results[0].plot()
+    cv2.imshow('Sólo Personas con YOLOv8', annotated_frame)
 
-    cv2.imshow('YOLOv8 Detección de Personas', annotated_frame)
-    if cv2.waitKey(1) & 0xFF == 27: # Presiona 'Esc' para salir
+    if cv2.waitKey(1) & 0xFF == 27:  # Esc para salir
         break
 
 cap.release()
